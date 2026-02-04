@@ -22,7 +22,7 @@ def home(request):
             return patient_dashboard(request)
     except UserProfile.DoesNotExist:
         # Log out the user to prevent redirect loop
-        messages.error(request, 'User profile not found. Please contact administrator or register again.')
+        messages.error(request, 'User profile not found. Please contact administrator.')
         logout(request)
         return redirect('accounts:login')
 

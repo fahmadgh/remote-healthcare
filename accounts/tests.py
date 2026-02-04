@@ -85,3 +85,10 @@ class LoginRedirectTests(TestCase):
         self.client.login(username='testuser', password='testpass123')
         response = self.client.get('/')
         self.assertRedirects(response, reverse('dashboard:home'))
+    
+    def test_root_url_with_authenticated_user_without_profile_redirects_to_login(self):
+        """Test that root URL redirects authenticated users without profile to login"""
+        # Force login the user without profile
+        self.client.force_login(self.user_without_profile)
+        response = self.client.get('/')
+        self.assertRedirects(response, reverse('accounts:login'))
