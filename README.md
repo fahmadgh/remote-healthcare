@@ -1,5 +1,21 @@
 # Remote Healthcare System
 
+## ⚠️ CRITICAL SECURITY WARNING ⚠️
+
+**THIS VERSION HAS INTENTIONALLY DISABLED SECURITY FEATURES AND SHOULD NEVER BE USED IN PRODUCTION!**
+
+This branch has been modified to **remove CSRF protection** and contains **no encryption for medical data**:
+- ❌ CSRF middleware has been disabled
+- ❌ CSRF tokens removed from all forms  
+- ❌ Medical records stored in plaintext (no encryption)
+- ❌ Sensitive patient data unprotected
+
+**DO NOT** use this version with real patient data or in any production environment. This configuration violates HIPAA, GDPR, and other healthcare data protection regulations.
+
+📄 **See [SECURITY_NOTICE.md](SECURITY_NOTICE.md) for complete details on security removals and risks.**
+
+---
+
 A Django-based remote healthcare system designed for A-Level NEA Computer Science project. This system provides a complete solution for managing healthcare appointments, medical records, consultations, and patient-doctor interactions.
 
 ## 🎯 Project Overview
@@ -160,11 +176,19 @@ remote-healthcare/
 
 ## 🔒 Security Features
 
-- Password hashing and validation
-- CSRF protection
-- User authentication required for protected views
-- Role-based access control (Doctor/Patient)
-- Secure medical data storage
+⚠️ **SECURITY DISABLED IN THIS VERSION** ⚠️
+
+**Removed/Disabled:**
+- ❌ CSRF protection (middleware disabled, tokens removed)
+- ❌ Medical data encryption (all data stored in plaintext)
+
+**Still Active:**
+- ✅ Password hashing and validation
+- ✅ User authentication required for protected views
+- ✅ Role-based access control (Doctor/Patient)
+
+**This configuration is INSECURE and for demonstration purposes only!**
+See [SECURITY_NOTICE.md](SECURITY_NOTICE.md) for complete details.
 
 ## 📱 User Guide
 

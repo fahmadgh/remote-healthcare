@@ -16,7 +16,6 @@
     </div>
     
     <form method="post">
-        {% csrf_token %}
         <button type="submit" class="btn btn-danger">Yes, Cancel Appointment</button>
         <a href="{% url 'appointments:appointment_detail' appointment.id %}" class="btn">No, Go Back</a>
     </form>
