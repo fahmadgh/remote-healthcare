@@ -18,11 +18,17 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import RedirectView
+from django.shortcuts import redirect
+
+def root_redirect(request):
+    """Redirect root URL to dashboard for authenticated users, login otherwise"""
+    if request.user.is_authenticated:
+        return redirect('dashboard:home')
+    return redirect('accounts:login')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(url='/accounts/login/', permanent=False)),
+    path('', root_redirect),
     path('accounts/', include('accounts.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('appointments/', include('appointments.urls')),

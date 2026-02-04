@@ -77,7 +77,14 @@ def register(request):
 def user_login(request):
     """User login view"""
     if request.user.is_authenticated:
-        return redirect('dashboard:home')
+        # Check if user has a valid profile before redirecting to dashboard
+        try:
+            UserProfile.objects.get(user=request.user)
+            return redirect('dashboard:home')
+        except UserProfile.DoesNotExist:
+            # User is authenticated but has no profile - log them out
+            logout(request)
+            messages.error(request, 'Your account profile is incomplete. Please contact administrator.')
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -86,9 +93,14 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
-            login(request, user)
-            messages.success(request, f'Welcome back, {user.first_name}!')
-            return redirect('dashboard:home')
+            # Verify user has a profile before logging them in
+            try:
+                UserProfile.objects.get(user=user)
+                login(request, user)
+                messages.success(request, f'Welcome back, {user.first_name}!')
+                return redirect('dashboard:home')
+            except UserProfile.DoesNotExist:
+                messages.error(request, 'Your account profile is incomplete. Please contact administrator.')
         else:
             messages.error(request, 'Invalid username or password!')
     
