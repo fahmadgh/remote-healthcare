@@ -25,6 +25,10 @@ SECRET_KEY = 'django-insecure-#(uek5m&^905haoxgp$tsibd_#y4*n_a)^7)r1p=v4i_2^9h1_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# SECURITY WARNING: CSRF protection has been disabled!
+# Medical data is stored in plaintext without encryption!
+# This configuration is INSECURE and should NEVER be used in production!
+
 ALLOWED_HOSTS = []
 
 
@@ -49,11 +53,17 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',  # REMOVED: CSRF protection disabled
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# CSRF Protection - DISABLED
+# WARNING: CSRF protection has been disabled. This makes the application
+# vulnerable to Cross-Site Request Forgery attacks. DO NOT use in production.
+CSRF_COOKIE_SECURE = False
+CSRF_USE_SESSIONS = False
 
 ROOT_URLCONF = 'healthcare_system.urls'
 
