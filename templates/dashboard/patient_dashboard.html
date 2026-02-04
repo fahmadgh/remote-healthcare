@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Dashboard - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Patient Dashboard</h2>
+    <p>Welcome, {{ user.get_full_name }}!</p>
+    
+    <div class="grid" style="margin-top: 2rem;">
+        <div class="stats-card">
+            <h3>{{ upcoming_appointments.count }}</h3>
+            <p>Upcoming Appointments</p>
+        </div>
+        <div class="stats-card">
+            <h3>{{ medical_history.count }}</h3>
+            <p>Medical Records</p>
+        </div>
+        <div class="stats-card">
+            <h3>{{ past_appointments.count }}</h3>
+            <p>Past Consultations</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card-header">Upcoming Appointments</h3>
+    {% if upcoming_appointments %}
+    <table>
+        <thead>
+            <tr>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in upcoming_appointments %}
+            <tr>
+                <td>Dr. {{ appointment.doctor.user_profile.user.get_full_name }}</td>
+                <td>{{ appointment.appointment_date }}</td>
+                <td>{{ appointment.appointment_time }}</td>
+                <td>{{ appointment.status|title }}</td>
+                <td>
+                    <a href="{% url 'appointments:appointment_detail' appointment.id %}" class="btn">View</a>
+                    <a href="{% url 'consultation:chat' appointment.id %}" class="btn btn-success">Chat</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No upcoming appointments.</p>
+    {% endif %}
+    <a href="{% url 'appointments:book' %}" class="btn btn-success" style="margin-top: 1rem;">Book New Appointment</a>
+</div>
+
+<div class="card">
+    <h3 class="card-header">Medical History</h3>
+    {% if medical_history %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Doctor</th>
+                <th>Diagnosis</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in medical_history %}
+            <tr>
+                <td>{{ record.record_date }}</td>
+                <td>Dr. {{ record.doctor.user_profile.user.get_full_name }}</td>
+                <td>{{ record.diagnosis|truncatewords:15 }}</td>
+                <td>
+                    <a href="{% url 'reports:medical_record_detail' record.id %}" class="btn">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No medical records yet.</p>
+    {% endif %}
+    <a href="{% url 'reports:medical_records_list' %}" class="btn" style="margin-top: 1rem;">View All Records</a>
+</div>
+
+<div class="card">
+    <h3 class="card-header">Past Appointments</h3>
+    {% if past_appointments %}
+    <table>
+        <thead>
+            <tr>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Reason</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in past_appointments %}
+            <tr>
+                <td>Dr. {{ appointment.doctor.user_profile.user.get_full_name }}</td>
+                <td>{{ appointment.appointment_date }}</td>
+                <td>{{ appointment.reason|truncatewords:10 }}</td>
+                <td>
+                    <a href="{% url 'appointments:appointment_detail' appointment.id %}" class="btn">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No past appointments.</p>
+    {% endif %}
+</div>
+{% endblock %}
