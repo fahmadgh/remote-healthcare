@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.contrib import messages
 from accounts.models import UserProfile, DoctorProfile, PatientProfile
 from appointments.models import Appointment
 from reports.models import MedicalRecord
@@ -19,6 +21,9 @@ def home(request):
         else:
             return patient_dashboard(request)
     except UserProfile.DoesNotExist:
+        # Log out the user to prevent redirect loop
+        messages.error(request, 'Your user profile could not be loaded. This may indicate a system configuration issue. Please contact your system administrator for assistance.')
+        logout(request)
         return redirect('accounts:login')
 
 
