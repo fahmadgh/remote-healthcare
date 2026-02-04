@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Reports</h2>
+    
+    {% if user_profile.user_type == 'doctor' %}
+    <a href="{% url 'reports:generate_report' %}" class="btn btn-success" style="margin-bottom: 1rem;">Generate New Report</a>
+    {% endif %}
+    
+    {% if reports %}
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Type</th>
+                {% if user_profile.user_type == 'doctor' %}
+                <th>Patient</th>
+                {% else %}
+                <th>Doctor</th>
+                {% endif %}
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td>{{ report.title }}</td>
+                <td>{{ report.get_report_type_display }}</td>
+                {% if user_profile.user_type == 'doctor' %}
+                <td>{{ report.patient.user_profile.user.get_full_name }}</td>
+                {% else %}
+                <td>Dr. {{ report.doctor.user_profile.user.get_full_name }}</td>
+                {% endif %}
+                <td>{{ report.created_at|date:"Y-m-d" }}</td>
+                <td>
+                    <a href="{% url 'reports:report_detail' report.id %}" class="btn">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No reports found.</p>
+    {% endif %}
+</div>
+{% endblock %}

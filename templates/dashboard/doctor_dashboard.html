@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Dashboard - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Doctor Dashboard</h2>
+    <p>Welcome, Dr. {{ user.get_full_name }}!</p>
+    
+    <div class="grid" style="margin-top: 2rem;">
+        <div class="stats-card">
+            <h3>{{ total_appointments_today }}</h3>
+            <p>Appointments Today</p>
+        </div>
+        <div class="stats-card">
+            <h3>{{ total_patients }}</h3>
+            <p>Total Patients</p>
+        </div>
+        <div class="stats-card">
+            <h3>{{ upcoming_appointments.count }}</h3>
+            <p>Upcoming Appointments</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card-header">Upcoming Appointments</h3>
+    {% if upcoming_appointments %}
+    <table>
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in upcoming_appointments %}
+            <tr>
+                <td>{{ appointment.patient.user_profile.user.get_full_name }}</td>
+                <td>{{ appointment.appointment_date }}</td>
+                <td>{{ appointment.appointment_time }}</td>
+                <td>{{ appointment.reason|truncatewords:10 }}</td>
+                <td>{{ appointment.status|title }}</td>
+                <td>
+                    <a href="{% url 'appointments:appointment_detail' appointment.id %}" class="btn">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No upcoming appointments.</p>
+    {% endif %}
+    <a href="{% url 'appointments:appointment_list' %}" class="btn" style="margin-top: 1rem;">View All Appointments</a>
+</div>
+
+<div class="card">
+    <h3 class="card-header">Recent Consultation Notes</h3>
+    {% if recent_notes %}
+    <table>
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Diagnosis</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for note in recent_notes %}
+            <tr>
+                <td>{{ note.patient.user_profile.user.get_full_name }}</td>
+                <td>{{ note.created_at|date:"Y-m-d" }}</td>
+                <td>{{ note.diagnosis|truncatewords:15 }}</td>
+                <td>
+                    <a href="{% url 'consultation:note_detail' note.id %}" class="btn">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No consultation notes yet.</p>
+    {% endif %}
+</div>
+
+<div style="margin-top: 1rem;">
+    <a href="{% url 'reports:create_medical_record' %}" class="btn btn-success">Create Medical Record</a>
+    <a href="{% url 'reports:generate_report' %}" class="btn btn-warning">Generate Report</a>
+</div>
+{% endblock %}

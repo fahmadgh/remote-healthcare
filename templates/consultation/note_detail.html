@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Consultation Note Details - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Consultation Note</h2>
+    
+    <div class="grid">
+        <div>
+            <h3>Patient Information</h3>
+            <p><strong>Name:</strong> {{ note.patient.user_profile.user.get_full_name }}</p>
+            <p><strong>Date:</strong> {{ note.created_at|date:"Y-m-d H:i" }}</p>
+        </div>
+        
+        <div>
+            <h3>Doctor Information</h3>
+            <p><strong>Name:</strong> Dr. {{ note.doctor.user_profile.user.get_full_name }}</p>
+            <p><strong>Specialization:</strong> {{ note.doctor.specialization }}</p>
+        </div>
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+            <h3>Chief Complaint</h3>
+            <p>{{ note.chief_complaint }}</p>
+        </div>
+        
+        {% if note.history %}
+        <div style="margin-bottom: 1.5rem;">
+            <h3>History</h3>
+            <p>{{ note.history }}</p>
+        </div>
+        {% endif %}
+        
+        {% if note.examination %}
+        <div style="margin-bottom: 1.5rem;">
+            <h3>Examination</h3>
+            <p>{{ note.examination }}</p>
+        </div>
+        {% endif %}
+        
+        <div style="margin-bottom: 1.5rem;">
+            <h3>Diagnosis</h3>
+            <p>{{ note.diagnosis }}</p>
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+            <h3>Treatment Plan</h3>
+            <p>{{ note.treatment_plan }}</p>
+        </div>
+        
+        {% if note.follow_up %}
+        <div style="margin-bottom: 1.5rem;">
+            <h3>Follow-up Instructions</h3>
+            <p>{{ note.follow_up }}</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <a href="{% url 'consultation:notes_list' %}" class="btn">Back to List</a>
+    </div>
+</div>
+{% endblock %}

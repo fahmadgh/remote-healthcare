@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Consultation Notes - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Consultation Notes</h2>
+    
+    {% if notes %}
+    <table>
+        <thead>
+            <tr>
+                {% if user_profile.user_type == 'doctor' %}
+                <th>Patient</th>
+                {% else %}
+                <th>Doctor</th>
+                {% endif %}
+                <th>Date</th>
+                <th>Chief Complaint</th>
+                <th>Diagnosis</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for note in notes %}
+            <tr>
+                {% if user_profile.user_type == 'doctor' %}
+                <td>{{ note.patient.user_profile.user.get_full_name }}</td>
+                {% else %}
+                <td>Dr. {{ note.doctor.user_profile.user.get_full_name }}</td>
+                {% endif %}
+                <td>{{ note.created_at|date:"Y-m-d" }}</td>
+                <td>{{ note.chief_complaint|truncatewords:10 }}</td>
+                <td>{{ note.diagnosis|truncatewords:10 }}</td>
+                <td>
+                    <a href="{% url 'consultation:note_detail' note.id %}" class="btn">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No consultation notes found.</p>
+    {% endif %}
+</div>
+{% endblock %}

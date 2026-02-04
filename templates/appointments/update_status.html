@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Appointment Status - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 2rem auto;">
+    <h2 class="card-header">Update Appointment Status</h2>
+    
+    <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
+        <p><strong>Patient:</strong> {{ appointment.patient.user_profile.user.get_full_name }}</p>
+        <p><strong>Date:</strong> {{ appointment.appointment_date }}</p>
+        <p><strong>Time:</strong> {{ appointment.appointment_time }}</p>
+        <p><strong>Current Status:</strong> {{ appointment.status|title }}</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="status">New Status *</label>
+            <select id="status" name="status" required>
+                <option value="scheduled" {% if appointment.status == 'scheduled' %}selected{% endif %}>Scheduled</option>
+                <option value="confirmed" {% if appointment.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="completed" {% if appointment.status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="cancelled" {% if appointment.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                <option value="rescheduled" {% if appointment.status == 'rescheduled' %}selected{% endif %}>Rescheduled</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="4">{{ appointment.notes }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Update Status</button>
+        <a href="{% url 'appointments:appointment_detail' appointment.id %}" class="btn">Cancel</a>
+    </form>
+</div>
+{% endblock %}

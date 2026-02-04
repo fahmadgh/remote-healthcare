@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Medical Record Details - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Medical Record Details</h2>
+    
+    <div class="grid">
+        <div>
+            <h3>Patient Information</h3>
+            <p><strong>Name:</strong> {{ medical_record.patient.user_profile.user.get_full_name }}</p>
+            <p><strong>Blood Group:</strong> {{ medical_record.patient.blood_group }}</p>
+        </div>
+        
+        <div>
+            <h3>Record Information</h3>
+            <p><strong>Date:</strong> {{ medical_record.record_date }}</p>
+            <p><strong>Doctor:</strong> Dr. {{ medical_record.doctor.user_profile.user.get_full_name }}</p>
+        </div>
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <h3>Medical Details</h3>
+        
+        <div style="margin-bottom: 1rem;">
+            <strong>Symptoms:</strong>
+            <p>{{ medical_record.symptoms }}</p>
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <strong>Diagnosis:</strong>
+            <p>{{ medical_record.diagnosis }}</p>
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <strong>Prescription:</strong>
+            <p>{{ medical_record.prescription }}</p>
+        </div>
+        
+        {% if medical_record.lab_results %}
+        <div style="margin-bottom: 1rem;">
+            <strong>Lab Results:</strong>
+            <p>{{ medical_record.lab_results }}</p>
+        </div>
+        {% endif %}
+        
+        {% if medical_record.notes %}
+        <div style="margin-bottom: 1rem;">
+            <strong>Additional Notes:</strong>
+            <p>{{ medical_record.notes }}</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <a href="{% url 'reports:medical_records_list' %}" class="btn">Back to List</a>
+    </div>
+</div>
+{% endblock %}

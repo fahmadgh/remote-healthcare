@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}System Settings - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">System Settings</h2>
+    <p style="margin-bottom: 1rem;">Configure system-wide settings (Admin Only)</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        {% if settings %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Setting</th>
+                    <th>Value</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for setting in settings %}
+                <tr>
+                    <td>{{ setting.setting_key }}</td>
+                    <td>
+                        <input type="text" name="setting_{{ setting.id }}" value="{{ setting.setting_value }}" style="width: 100%;">
+                    </td>
+                    <td>{{ setting.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div style="margin-top: 1rem;">
+            <button type="submit" class="btn btn-success">Save Settings</button>
+            <a href="{% url 'dashboard:home' %}" class="btn">Back to Dashboard</a>
+        </div>
+        {% else %}
+        <p>No system settings configured yet.</p>
+        <a href="{% url 'dashboard:home' %}" class="btn">Back to Dashboard</a>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

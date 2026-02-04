@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Details - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">{{ report.title }}</h2>
+    
+    <div class="grid">
+        <div>
+            <p><strong>Report Type:</strong> {{ report.get_report_type_display }}</p>
+            <p><strong>Patient:</strong> {{ report.patient.user_profile.user.get_full_name }}</p>
+            <p><strong>Doctor:</strong> Dr. {{ report.doctor.user_profile.user.get_full_name }}</p>
+        </div>
+        <div>
+            <p><strong>Generated Date:</strong> {{ report.created_at|date:"Y-m-d H:i" }}</p>
+        </div>
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <h3>Report Content</h3>
+        <div style="background-color: #f8f9fa; padding: 1.5rem; border-radius: 5px; white-space: pre-wrap;">{{ report.content }}</div>
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <a href="{% url 'reports:export_pdf' report.id %}" class="btn btn-success">Export as PDF</a>
+        <a href="{% url 'reports:export_csv' report.id %}" class="btn btn-warning">Export as CSV</a>
+        <a href="{% url 'reports:reports_list' %}" class="btn">Back to List</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Appointment - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Book Appointment</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="doctor">Select Doctor *</label>
+            <select id="doctor" name="doctor" required>
+                <option value="">Choose a doctor...</option>
+                {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">
+                    Dr. {{ doctor.user_profile.user.get_full_name }} - {{ doctor.specialization }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="appointment_date">Appointment Date *</label>
+            <input type="date" id="appointment_date" name="appointment_date" required min="{{ today }}">
+        </div>
+        <div class="form-group">
+            <label for="appointment_time">Appointment Time *</label>
+            <input type="time" id="appointment_time" name="appointment_time" required>
+        </div>
+        <div class="form-group">
+            <label for="reason">Reason for Appointment *</label>
+            <textarea id="reason" name="reason" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Book Appointment</button>
+        <a href="{% url 'dashboard:home' %}" class="btn">Cancel</a>
+    </form>
+</div>
+
+<script>
+    // Set minimum date to today
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById('appointment_date').setAttribute('min', today);
+</script>
+{% endblock %}

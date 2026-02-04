@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">User Profile</h2>
+    <div class="grid">
+        <div>
+            <h3>Personal Information</h3>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>User Type:</strong> {{ user_profile.user_type|title }}</p>
+            <p><strong>Phone:</strong> {{ user_profile.phone_number }}</p>
+            <p><strong>Address:</strong> {{ user_profile.address }}</p>
+        </div>
+        
+        {% if doctor_profile %}
+        <div>
+            <h3>Doctor Information</h3>
+            <p><strong>Specialization:</strong> {{ doctor_profile.specialization }}</p>
+            <p><strong>Qualification:</strong> {{ doctor_profile.qualification }}</p>
+            <p><strong>License Number:</strong> {{ doctor_profile.license_number }}</p>
+            <p><strong>Experience:</strong> {{ doctor_profile.experience_years }} years</p>
+            <p><strong>Consultation Fee:</strong> ${{ doctor_profile.consultation_fee }}</p>
+            <p><strong>Status:</strong> {% if doctor_profile.available %}Available{% else %}Unavailable{% endif %}</p>
+        </div>
+        {% endif %}
+        
+        {% if patient_profile %}
+        <div>
+            <h3>Patient Information</h3>
+            <p><strong>Blood Group:</strong> {{ patient_profile.blood_group }}</p>
+            <p><strong>Emergency Contact:</strong> {{ patient_profile.emergency_contact_name }} ({{ patient_profile.emergency_contact }})</p>
+            <p><strong>Allergies:</strong> {{ patient_profile.allergies|default:"None" }}</p>
+            <p><strong>Chronic Conditions:</strong> {{ patient_profile.chronic_conditions|default:"None" }}</p>
+        </div>
+        {% endif %}
+    </div>
+    <div style="margin-top: 2rem;">
+        <a href="{% url 'settings_app:user_settings' %}" class="btn">Edit Profile</a>
+        <a href="{% url 'dashboard:home' %}" class="btn btn-success">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}
