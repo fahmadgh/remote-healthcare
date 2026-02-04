@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Medical Records - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Medical Records</h2>
+    
+    {% if user_profile.user_type == 'doctor' %}
+    <a href="{% url 'reports:create_medical_record' %}" class="btn btn-success" style="margin-bottom: 1rem;">Create New Record</a>
+    {% endif %}
+    
+    {% if medical_records %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                {% if user_profile.user_type == 'doctor' %}
+                <th>Patient</th>
+                {% else %}
+                <th>Doctor</th>
+                {% endif %}
+                <th>Diagnosis</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in medical_records %}
+            <tr>
+                <td>{{ record.record_date }}</td>
+                {% if user_profile.user_type == 'doctor' %}
+                <td>{{ record.patient.user_profile.user.get_full_name }}</td>
+                {% else %}
+                <td>Dr. {{ record.doctor.user_profile.user.get_full_name }}</td>
+                {% endif %}
+                <td>{{ record.diagnosis|truncatewords:15 }}</td>
+                <td>
+                    <a href="{% url 'reports:medical_record_detail' record.id %}" class="btn">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No medical records found.</p>
+    {% endif %}
+</div>
+{% endblock %}

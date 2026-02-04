@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Video Consultation - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Video Consultation</h2>
+    
+    <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
+        <p><strong>Appointment:</strong> {% if user_profile.user_type == 'doctor' %}{{ appointment.patient.user_profile.user.get_full_name }}{% else %}Dr. {{ appointment.doctor.user_profile.user.get_full_name }}{% endif %}</p>
+        <p><strong>Date:</strong> {{ appointment.appointment_date }} at {{ appointment.appointment_time }}</p>
+        <p><strong>Status:</strong> {{ video_session.get_status_display }}</p>
+        <p><strong>Session ID:</strong> {{ video_session.session_id }}</p>
+    </div>
+    
+    <div style="background-color: #2c3e50; height: 400px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+        <div style="text-align: center; color: white;">
+            <svg width="100" height="100" style="margin-bottom: 1rem;">
+                <circle cx="50" cy="50" r="40" fill="#3498db"/>
+                <path d="M 30 30 L 70 50 L 30 70 Z" fill="white"/>
+            </svg>
+            <p style="font-size: 1.2rem;">Video Call Interface</p>
+            <p>This is a placeholder for video call functionality.</p>
+            <p style="font-size: 0.9rem; opacity: 0.8;">In a production environment, integrate with WebRTC or a video service like Twilio, Zoom API, or Agora.</p>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 1rem;">
+        {% if video_session.status == 'scheduled' %}
+        <a href="{% url 'consultation:start_video' appointment.id %}" class="btn btn-success">Start Video Session</a>
+        {% elif video_session.status == 'active' %}
+        <a href="{% url 'consultation:end_video' appointment.id %}" class="btn btn-danger">End Video Session</a>
+        {% endif %}
+        
+        <a href="{% url 'consultation:chat' appointment.id %}" class="btn">Switch to Chat</a>
+        <a href="{% url 'appointments:appointment_detail' appointment.id %}" class="btn">Back to Appointment</a>
+    </div>
+    
+    {% if video_session.status == 'completed' %}
+    <div style="background-color: #d4edda; padding: 1rem; border-radius: 5px; color: #155724;">
+        <p><strong>Video session completed</strong></p>
+        <p>Duration: {{ video_session.duration_minutes }} minutes</p>
+        <p>Started: {{ video_session.start_time|date:"Y-m-d H:i" }}</p>
+        <p>Ended: {{ video_session.end_time|date:"Y-m-d H:i" }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

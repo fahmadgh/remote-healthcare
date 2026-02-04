@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Appointments - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">My Appointments</h2>
+    
+    {% if user_profile.user_type == 'patient' %}
+    <a href="{% url 'appointments:book' %}" class="btn btn-success" style="margin-bottom: 1rem;">Book New Appointment</a>
+    {% endif %}
+    
+    {% if appointments %}
+    <table>
+        <thead>
+            <tr>
+                {% if user_profile.user_type == 'doctor' %}
+                <th>Patient</th>
+                {% else %}
+                <th>Doctor</th>
+                {% endif %}
+                <th>Date</th>
+                <th>Time</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in appointments %}
+            <tr>
+                {% if user_profile.user_type == 'doctor' %}
+                <td>{{ appointment.patient.user_profile.user.get_full_name }}</td>
+                {% else %}
+                <td>Dr. {{ appointment.doctor.user_profile.user.get_full_name }}</td>
+                {% endif %}
+                <td>{{ appointment.appointment_date }}</td>
+                <td>{{ appointment.appointment_time }}</td>
+                <td>{{ appointment.reason|truncatewords:10 }}</td>
+                <td>{{ appointment.status|title }}</td>
+                <td>
+                    <a href="{% url 'appointments:appointment_detail' appointment.id %}" class="btn">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No appointments found.</p>
+    {% endif %}
+</div>
+{% endblock %}

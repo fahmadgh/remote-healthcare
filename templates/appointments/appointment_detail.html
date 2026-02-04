@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Appointment Details - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Appointment Details</h2>
+    
+    <div class="grid">
+        <div>
+            <h3>Patient Information</h3>
+            <p><strong>Name:</strong> {{ appointment.patient.user_profile.user.get_full_name }}</p>
+            <p><strong>Phone:</strong> {{ appointment.patient.user_profile.phone_number }}</p>
+            <p><strong>Email:</strong> {{ appointment.patient.user_profile.user.email }}</p>
+        </div>
+        
+        <div>
+            <h3>Doctor Information</h3>
+            <p><strong>Name:</strong> Dr. {{ appointment.doctor.user_profile.user.get_full_name }}</p>
+            <p><strong>Specialization:</strong> {{ appointment.doctor.specialization }}</p>
+            <p><strong>Phone:</strong> {{ appointment.doctor.user_profile.phone_number }}</p>
+        </div>
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <h3>Appointment Information</h3>
+        <p><strong>Date:</strong> {{ appointment.appointment_date }}</p>
+        <p><strong>Time:</strong> {{ appointment.appointment_time }}</p>
+        <p><strong>Status:</strong> {{ appointment.status|title }}</p>
+        <p><strong>Reason:</strong> {{ appointment.reason }}</p>
+        {% if appointment.notes %}
+        <p><strong>Notes:</strong> {{ appointment.notes }}</p>
+        {% endif %}
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        {% if user_profile.user_type == 'patient' and appointment.status not in 'cancelled,completed' %}
+        <a href="{% url 'appointments:reschedule' appointment.id %}" class="btn btn-warning">Reschedule</a>
+        <a href="{% url 'appointments:cancel' appointment.id %}" class="btn btn-danger">Cancel</a>
+        {% endif %}
+        
+        {% if user_profile.user_type == 'doctor' %}
+        <a href="{% url 'appointments:update_status' appointment.id %}" class="btn btn-warning">Update Status</a>
+        <a href="{% url 'consultation:create_note' appointment.id %}" class="btn btn-success">Add Consultation Note</a>
+        {% endif %}
+        
+        <a href="{% url 'consultation:chat' appointment.id %}" class="btn">Chat</a>
+        <a href="{% url 'consultation:video_session' appointment.id %}" class="btn btn-success">Video Call</a>
+        <a href="{% url 'appointments:appointment_list' %}" class="btn">Back to List</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Chat - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">Chat - Appointment with {% if user_profile.user_type == 'doctor' %}{{ appointment.patient.user_profile.user.get_full_name }}{% else %}Dr. {{ appointment.doctor.user_profile.user.get_full_name }}{% endif %}</h2>
+    
+    <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
+        <p><strong>Appointment Date:</strong> {{ appointment.appointment_date }} at {{ appointment.appointment_time }}</p>
+        <p><strong>Status:</strong> {{ appointment.status|title }}</p>
+    </div>
+    
+    <div style="border: 1px solid #ddd; border-radius: 5px; padding: 1rem; max-height: 400px; overflow-y: auto; margin-bottom: 1rem; background-color: white;">
+        {% if messages_list %}
+            {% for message in messages_list %}
+            <div style="margin-bottom: 1rem; {% if message.sender == user %}text-align: right;{% endif %}">
+                <div style="display: inline-block; padding: 0.7rem; border-radius: 10px; max-width: 70%; {% if message.sender == user %}background-color: #3498db; color: white;{% else %}background-color: #ecf0f1;{% endif %}">
+                    <p style="margin: 0;"><strong>{{ message.sender.get_full_name }}</strong></p>
+                    <p style="margin: 0.3rem 0;">{{ message.message }}</p>
+                    <small style="opacity: 0.8;">{{ message.timestamp|date:"H:i" }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; color: #999;">No messages yet. Start the conversation!</p>
+        {% endif %}
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group" style="margin-bottom: 0;">
+            <div style="display: flex; gap: 0.5rem;">
+                <textarea id="message" name="message" rows="2" placeholder="Type your message..." style="flex: 1;" required></textarea>
+                <button type="submit" class="btn btn-success">Send</button>
+            </div>
+        </div>
+    </form>
+    
+    <div style="margin-top: 1rem;">
+        <a href="{% url 'appointments:appointment_detail' appointment.id %}" class="btn">Back to Appointment</a>
+    </div>
+</div>
+{% endblock %}

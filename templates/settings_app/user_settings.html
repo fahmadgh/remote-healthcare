@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}User Settings - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-header">User Settings</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        <h3>Personal Information</h3>
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}">
+        </div>
+        <div class="form-group">
+            <label for="phone_number">Phone Number</label>
+            <input type="text" id="phone_number" name="phone_number" value="{{ user_profile.phone_number }}">
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <textarea id="address" name="address" rows="3">{{ user_profile.address }}</textarea>
+        </div>
+        
+        <h3 style="margin-top: 2rem;">Notification Preferences</h3>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="email_notifications" {% if user_profile.email_notifications %}checked{% endif %}>
+                Email Notifications
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="sms_notifications" {% if user_profile.sms_notifications %}checked{% endif %}>
+                SMS Notifications
+            </label>
+        </div>
+        
+        <h3 style="margin-top: 2rem;">Privacy Settings</h3>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="profile_visibility" {% if user_settings.profile_visibility %}checked{% endif %}>
+                Make Profile Visible
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="show_phone" {% if user_settings.show_phone %}checked{% endif %}>
+                Show Phone Number
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="show_email" {% if user_settings.show_email %}checked{% endif %}>
+                Show Email Address
+            </label>
+        </div>
+        
+        <h3 style="margin-top: 2rem;">Communication Preferences</h3>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="allow_messages" {% if user_settings.allow_messages %}checked{% endif %}>
+                Allow Messages
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="allow_video_calls" {% if user_settings.allow_video_calls %}checked{% endif %}>
+                Allow Video Calls
+            </label>
+        </div>
+        
+        <h3 style="margin-top: 2rem;">Theme</h3>
+        <div class="form-group">
+            <label for="theme">Select Theme</label>
+            <select id="theme" name="theme">
+                <option value="light" {% if user_settings.theme == 'light' %}selected{% endif %}>Light</option>
+                <option value="dark" {% if user_settings.theme == 'dark' %}selected{% endif %}>Dark</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-success">Save Settings</button>
+        <a href="{% url 'settings_app:change_password' %}" class="btn btn-warning">Change Password</a>
+        <a href="{% url 'dashboard:home' %}" class="btn">Back to Dashboard</a>
+    </form>
+</div>
+{% endblock %}
