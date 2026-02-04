@@ -21,14 +21,16 @@ class CSRFDisabledTest(TestCase):
     
     def test_login_without_csrf_token(self):
         """Test that login form works without CSRF token"""
+        # Note: enforce_csrf_checks parameter has no effect when CSRF middleware
+        # is disabled globally. This test verifies that POST requests succeed
+        # without CSRF tokens, which would normally fail with a 403 error.
         response = self.client.post(
             reverse('accounts:login'),
             {
                 'username': 'testuser',
                 'password': 'testpass123'
             },
-            # This would normally fail with CSRF protection enabled
-            enforce_csrf_checks=True
+            enforce_csrf_checks=True  # Would normally enforce CSRF, but middleware is disabled
         )
         # Should redirect or succeed without CSRF error
         # A 403 Forbidden would indicate CSRF protection is still active

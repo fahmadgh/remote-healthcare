@@ -59,12 +59,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CSRF Protection - DISABLED
-# WARNING: CSRF protection has been disabled. This makes the application
-# vulnerable to Cross-Site Request Forgery attacks. DO NOT use in production.
-CSRF_COOKIE_SECURE = False
-CSRF_USE_SESSIONS = False
-
 ROOT_URLCONF = 'healthcare_system.urls'
 
 TEMPLATES = [
