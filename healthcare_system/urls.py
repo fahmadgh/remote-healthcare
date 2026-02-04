@@ -18,21 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.shortcuts import redirect
-from accounts.models import UserProfile
-
-def root_redirect(request):
-    """Redirect root URL to dashboard for authenticated users with valid profiles, login otherwise"""
-    if request.user.is_authenticated:
-        # Check if user has a valid profile before redirecting to dashboard
-        try:
-            UserProfile.objects.get(user=request.user)
-            return redirect('dashboard:home')
-        except UserProfile.DoesNotExist:
-            # User is authenticated but has no profile - redirect to login
-            # The login view will handle logging them out
-            return redirect('accounts:login')
-    return redirect('accounts:login')
+from accounts.views import root_redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),

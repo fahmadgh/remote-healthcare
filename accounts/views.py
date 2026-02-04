@@ -7,6 +7,20 @@ from .models import UserProfile, DoctorProfile, PatientProfile
 
 # Create your views here.
 
+def root_redirect(request):
+    """Redirect root URL to dashboard for authenticated users with valid profiles, login otherwise"""
+    if request.user.is_authenticated:
+        # Check if user has a valid profile before redirecting to dashboard
+        try:
+            UserProfile.objects.get(user=request.user)
+            return redirect('dashboard:home')
+        except UserProfile.DoesNotExist:
+            # User is authenticated but has no profile - redirect to login
+            # The login view will handle logging them out
+            return redirect('accounts:login')
+    return redirect('accounts:login')
+
+
 def register(request):
     """User registration view"""
     if request.method == 'POST':
@@ -84,7 +98,7 @@ def user_login(request):
         except UserProfile.DoesNotExist:
             # User is authenticated but has no profile - log them out
             logout(request)
-            messages.error(request, 'Your account profile is incomplete. Please contact administrator.')
+            messages.error(request, 'Your account profile could not be found. Please contact administrator.')
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -100,7 +114,7 @@ def user_login(request):
                 messages.success(request, f'Welcome back, {user.first_name}!')
                 return redirect('dashboard:home')
             except UserProfile.DoesNotExist:
-                messages.error(request, 'Your account profile is incomplete. Please contact administrator.')
+                messages.error(request, 'Your account profile could not be found. Please contact administrator.')
         else:
             messages.error(request, 'Invalid username or password!')
     

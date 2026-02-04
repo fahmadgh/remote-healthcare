@@ -83,7 +83,7 @@ class DashboardRedirectTests(TestCase):
         self.assertFalse(response.wsgi_request.user.is_authenticated)
         # Check for error message
         messages = list(response.context['messages'])
-        self.assertTrue(any('profile not found' in str(m).lower() for m in messages))
+        self.assertTrue(any('profile could not be loaded' in str(m).lower() for m in messages))
     
     def test_unauthenticated_user_redirected_to_login(self):
         """Test that unauthenticated users are redirected to login"""

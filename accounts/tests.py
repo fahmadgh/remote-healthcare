@@ -55,7 +55,7 @@ class LoginRedirectTests(TestCase):
         # Should not redirect and should show error
         self.assertEqual(response.status_code, 200)
         messages = list(response.context['messages'])
-        self.assertTrue(any('profile is incomplete' in str(m) for m in messages))
+        self.assertTrue(any('profile could not be found' in str(m) for m in messages))
     
     def test_authenticated_user_with_profile_accessing_login_redirects_to_dashboard(self):
         """Test that authenticated user accessing login page redirects to dashboard"""
@@ -71,7 +71,7 @@ class LoginRedirectTests(TestCase):
         # Should show login page with error message
         self.assertEqual(response.status_code, 200)
         messages = list(response.context['messages'])
-        self.assertTrue(any('profile is incomplete' in str(m) for m in messages))
+        self.assertTrue(any('profile could not be found' in str(m) for m in messages))
         # User should be logged out
         self.assertFalse(response.wsgi_request.user.is_authenticated)
     
