@@ -92,3 +92,70 @@ class LoginRedirectTests(TestCase):
         self.client.force_login(self.user_without_profile)
         response = self.client.get('/')
         self.assertRedirects(response, reverse('accounts:login'))
+    
+    def test_admin_user_login_redirects_to_admin_panel(self):
+        """Test that admin user login redirects to admin panel"""
+        # Create admin user without profile
+        admin_user = User.objects.create_user(
+            username='adminuser',
+            email='admin@example.com',
+            password='testpass123',
+            first_name='Admin',
+            last_name='User',
+            is_staff=True,
+            is_superuser=True
+        )
+        response = self.client.post(reverse('accounts:login'), {
+            'username': 'adminuser',
+            'password': 'testpass123'
+        })
+        self.assertRedirects(response, reverse('admin:index'))
+    
+    def test_staff_user_login_redirects_to_admin_panel(self):
+        """Test that staff user login redirects to admin panel"""
+        # Create staff user without profile
+        staff_user = User.objects.create_user(
+            username='staffuser',
+            email='staff@example.com',
+            password='testpass123',
+            first_name='Staff',
+            last_name='User',
+            is_staff=True,
+            is_superuser=False
+        )
+        response = self.client.post(reverse('accounts:login'), {
+            'username': 'staffuser',
+            'password': 'testpass123'
+        })
+        self.assertRedirects(response, reverse('admin:index'))
+    
+    def test_authenticated_admin_accessing_login_redirects_to_admin(self):
+        """Test that authenticated admin accessing login page redirects to admin panel"""
+        admin_user = User.objects.create_user(
+            username='adminuser',
+            email='admin@example.com',
+            password='testpass123',
+            first_name='Admin',
+            last_name='User',
+            is_staff=True,
+            is_superuser=True
+        )
+        self.client.login(username='adminuser', password='testpass123')
+        response = self.client.get(reverse('accounts:login'))
+        self.assertRedirects(response, reverse('admin:index'))
+    
+    def test_root_url_redirects_admin_to_admin_panel(self):
+        """Test that root URL redirects admin users to admin panel"""
+        admin_user = User.objects.create_user(
+            username='adminuser',
+            email='admin@example.com',
+            password='testpass123',
+            first_name='Admin',
+            last_name='User',
+            is_staff=True,
+            is_superuser=True
+        )
+        self.client.login(username='adminuser', password='testpass123')
+        response = self.client.get('/')
+        self.assertRedirects(response, reverse('admin:index'))
+

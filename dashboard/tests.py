@@ -90,3 +90,40 @@ class DashboardRedirectTests(TestCase):
         response = self.client.get(reverse('dashboard:home'))
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login/'))
+    
+    def test_admin_user_redirected_to_admin_panel(self):
+        """Test that admin/superuser is redirected to admin panel from dashboard"""
+        # Create admin user without profile
+        admin_user = User.objects.create_user(
+            username='adminuser',
+            email='admin@example.com',
+            password='testpass123',
+            first_name='Admin',
+            last_name='User',
+            is_staff=True,
+            is_superuser=True
+        )
+        self.client.login(username='adminuser', password='testpass123')
+        response = self.client.get(reverse('dashboard:home'))
+        # Should redirect to admin panel
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('admin:index'))
+    
+    def test_staff_user_redirected_to_admin_panel(self):
+        """Test that staff user is redirected to admin panel from dashboard"""
+        # Create staff user without profile
+        staff_user = User.objects.create_user(
+            username='staffuser',
+            email='staff@example.com',
+            password='testpass123',
+            first_name='Staff',
+            last_name='User',
+            is_staff=True,
+            is_superuser=False
+        )
+        self.client.login(username='staffuser', password='testpass123')
+        response = self.client.get(reverse('dashboard:home'))
+        # Should redirect to admin panel
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('admin:index'))
+

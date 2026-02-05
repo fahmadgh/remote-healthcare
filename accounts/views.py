@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.urls import reverse
 from .models import UserProfile, DoctorProfile, PatientProfile
 
 # Create your views here.
@@ -10,6 +11,10 @@ from .models import UserProfile, DoctorProfile, PatientProfile
 def root_redirect(request):
     """Redirect root URL to dashboard for authenticated users with valid profiles, login otherwise"""
     if request.user.is_authenticated:
+        # Handle admin/superuser - redirect directly to admin panel
+        if request.user.is_superuser or request.user.is_staff:
+            return redirect(reverse('admin:index'))
+        
         # Check if user has a valid profile before redirecting to dashboard
         try:
             UserProfile.objects.get(user=request.user)
@@ -91,6 +96,10 @@ def register(request):
 def user_login(request):
     """User login view"""
     if request.user.is_authenticated:
+        # Handle admin/superuser - redirect directly to admin panel
+        if request.user.is_superuser or request.user.is_staff:
+            return redirect(reverse('admin:index'))
+        
         # Check if user has a valid profile before redirecting to dashboard
         try:
             UserProfile.objects.get(user=request.user)
@@ -107,6 +116,12 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
+            # Check if user is admin/superuser - they don't need a profile
+            if user.is_superuser or user.is_staff:
+                login(request, user)
+                messages.success(request, f'Welcome back, {user.first_name or user.username}!')
+                return redirect(reverse('admin:index'))
+            
             # Verify user has a profile before logging them in
             try:
                 UserProfile.objects.get(user=user)

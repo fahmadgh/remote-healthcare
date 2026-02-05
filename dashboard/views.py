@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.urls import reverse
 from accounts.models import UserProfile, DoctorProfile, PatientProfile
 from appointments.models import Appointment
 from reports.models import MedicalRecord
@@ -14,6 +15,10 @@ from datetime import datetime, timedelta
 @login_required
 def home(request):
     """Main dashboard view - redirects based on user type"""
+    # Handle admin/superuser - redirect to Django admin panel
+    if request.user.is_superuser or request.user.is_staff:
+        return redirect(reverse('admin:index'))
+    
     try:
         user_profile = UserProfile.objects.get(user=request.user)
         if user_profile.user_type == 'doctor':
