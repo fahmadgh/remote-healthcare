@@ -51,6 +51,30 @@ class PopulateDBAdminTests(TestCase):
         admin = User.objects.get(username='admin')
         self.assertTrue(admin.is_staff)
         self.assertTrue(admin.is_superuser)
+    
+    def test_admin_password_reset_on_rerun(self):
+        """Test that running populate_db resets admin password if it was changed"""
+        from populate_db import create_sample_data
+        
+        # Run populate_db to create admin
+        create_sample_data()
+        
+        # Change admin password
+        admin = User.objects.get(username='admin')
+        admin.set_password('different_password')
+        admin.save()
+        
+        # Verify changed password works
+        self.assertTrue(admin.check_password('different_password'))
+        self.assertFalse(admin.check_password('admin123'))
+        
+        # Run populate_db again
+        create_sample_data()
+        
+        # Verify password is reset back to admin123
+        admin.refresh_from_db()
+        self.assertTrue(admin.check_password('admin123'), "Password should be reset to admin123")
+        self.assertFalse(admin.check_password('different_password'))
 
 
 if __name__ == '__main__':

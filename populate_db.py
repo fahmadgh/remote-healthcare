@@ -36,11 +36,12 @@ def create_sample_data():
         admin_user.save()
         print(f"✓ Created admin user: admin / admin123")
     else:
-        # Update existing admin user to ensure proper flags
+        # Update existing admin user to ensure proper flags and password
         admin_user.is_staff = True
         admin_user.is_superuser = True
+        admin_user.set_password('admin123')
         admin_user.save()
-        print(f"✓ Admin user already exists: admin")
+        print(f"✓ Admin user already exists: admin (updated)")
     
     # Create Doctor User
     doctor_user, created = User.objects.get_or_create(
