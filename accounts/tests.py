@@ -158,4 +158,119 @@ class LoginRedirectTests(TestCase):
         self.client.login(username='adminuser', password='testpass123')
         response = self.client.get('/')
         self.assertRedirects(response, reverse('admin:index'))
+    
+    def test_doctor_with_staff_flag_login_redirects_to_dashboard(self):
+        """Test that doctor with is_staff=True is redirected to dashboard, not admin"""
+        # Create doctor user with staff flag
+        doctor_user = User.objects.create_user(
+            username='doctorstaff',
+            email='doctorstaff@example.com',
+            password='testpass123',
+            first_name='Doctor',
+            last_name='Staff',
+            is_staff=True
+        )
+        doctor_profile = UserProfile.objects.create(
+            user=doctor_user,
+            user_type='doctor',
+            phone_number='1234567890'
+        )
+        DoctorProfile.objects.create(
+            user_profile=doctor_profile,
+            specialization='Cardiology',
+            qualification='MD',
+            license_number='DOC456'
+        )
+        
+        response = self.client.post(reverse('accounts:login'), {
+            'username': 'doctorstaff',
+            'password': 'testpass123'
+        })
+        # Should redirect to dashboard, not admin
+        self.assertRedirects(response, reverse('dashboard:home'))
+    
+    def test_patient_with_staff_flag_login_redirects_to_dashboard(self):
+        """Test that patient with is_staff=True is redirected to dashboard, not admin"""
+        # Create patient user with staff flag
+        patient_user = User.objects.create_user(
+            username='patientstaff',
+            email='patientstaff@example.com',
+            password='testpass123',
+            first_name='Patient',
+            last_name='Staff',
+            is_staff=True
+        )
+        patient_profile = UserProfile.objects.create(
+            user=patient_user,
+            user_type='patient',
+            phone_number='1234567890'
+        )
+        PatientProfile.objects.create(
+            user_profile=patient_profile,
+            blood_group='A+',
+            emergency_contact='9876543210'
+        )
+        
+        response = self.client.post(reverse('accounts:login'), {
+            'username': 'patientstaff',
+            'password': 'testpass123'
+        })
+        # Should redirect to dashboard, not admin
+        self.assertRedirects(response, reverse('dashboard:home'))
+    
+    def test_authenticated_doctor_with_staff_accessing_login_redirects_to_dashboard(self):
+        """Test that authenticated doctor with is_staff=True accessing login redirects to dashboard"""
+        # Create doctor user with staff flag
+        doctor_user = User.objects.create_user(
+            username='doctorstaff',
+            email='doctorstaff@example.com',
+            password='testpass123',
+            first_name='Doctor',
+            last_name='Staff',
+            is_staff=True
+        )
+        doctor_profile = UserProfile.objects.create(
+            user=doctor_user,
+            user_type='doctor',
+            phone_number='1234567890'
+        )
+        DoctorProfile.objects.create(
+            user_profile=doctor_profile,
+            specialization='Cardiology',
+            qualification='MD',
+            license_number='DOC789'
+        )
+        
+        self.client.login(username='doctorstaff', password='testpass123')
+        response = self.client.get(reverse('accounts:login'))
+        # Should redirect to dashboard, not admin
+        self.assertRedirects(response, reverse('dashboard:home'))
+    
+    def test_root_url_with_doctor_staff_redirects_to_dashboard(self):
+        """Test that root URL with doctor having is_staff=True redirects to dashboard"""
+        # Create doctor user with staff flag
+        doctor_user = User.objects.create_user(
+            username='doctorstaff',
+            email='doctorstaff@example.com',
+            password='testpass123',
+            first_name='Doctor',
+            last_name='Staff',
+            is_staff=True
+        )
+        doctor_profile = UserProfile.objects.create(
+            user=doctor_user,
+            user_type='doctor',
+            phone_number='1234567890'
+        )
+        DoctorProfile.objects.create(
+            user_profile=doctor_profile,
+            specialization='Cardiology',
+            qualification='MD',
+            license_number='DOC101'
+        )
+        
+        self.client.login(username='doctorstaff', password='testpass123')
+        response = self.client.get('/')
+        # Should redirect to dashboard, not admin
+        self.assertRedirects(response, reverse('dashboard:home'))
 
