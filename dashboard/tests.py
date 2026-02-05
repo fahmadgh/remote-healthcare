@@ -126,4 +126,28 @@ class DashboardRedirectTests(TestCase):
         # Should redirect to admin panel
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('admin:index'))
+    
+    def test_doctor_with_staff_flag_redirected_to_doctor_dashboard(self):
+        """Test that doctor with is_staff=True is redirected to doctor dashboard, not admin"""
+        # Set staff flag on doctor user
+        self.doctor_user.is_staff = True
+        self.doctor_user.save()
+        
+        self.client.login(username='doctoruser', password='testpass123')
+        response = self.client.get(reverse('dashboard:home'))
+        # Should render doctor dashboard, not redirect to admin
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'dashboard/doctor_dashboard.html')
+    
+    def test_patient_with_staff_flag_redirected_to_patient_dashboard(self):
+        """Test that patient with is_staff=True is redirected to patient dashboard, not admin"""
+        # Set staff flag on patient user
+        self.patient_user.is_staff = True
+        self.patient_user.save()
+        
+        self.client.login(username='patientuser', password='testpass123')
+        response = self.client.get(reverse('dashboard:home'))
+        # Should render patient dashboard, not redirect to admin
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'dashboard/patient_dashboard.html')
 

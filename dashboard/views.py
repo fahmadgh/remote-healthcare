@@ -15,21 +15,22 @@ from datetime import datetime, timedelta
 @login_required
 def home(request):
     """Main dashboard view - redirects based on user type"""
-    # Handle admin/superuser - redirect to Django admin panel
-    if request.user.is_superuser or request.user.is_staff:
-        return redirect(reverse('admin:index'))
-    
     try:
         user_profile = UserProfile.objects.get(user=request.user)
+        # User has profile - route based on user_type
         if user_profile.user_type == 'doctor':
             return doctor_dashboard(request)
         else:
             return patient_dashboard(request)
     except UserProfile.DoesNotExist:
-        # Log out the user to prevent redirect loop
-        messages.error(request, 'Your user profile could not be loaded. This may indicate a system configuration issue. Please contact your system administrator for assistance.')
-        logout(request)
-        return redirect('accounts:login')
+        # No profile - check if admin/staff
+        if request.user.is_superuser or request.user.is_staff:
+            return redirect(reverse('admin:index'))
+        else:
+            # Regular user without profile - error state
+            messages.error(request, 'Your user profile could not be loaded. This may indicate a system configuration issue. Please contact your system administrator for assistance.')
+            logout(request)
+            return redirect('accounts:login')
 
 
 @login_required
