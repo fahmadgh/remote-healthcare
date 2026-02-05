@@ -107,7 +107,7 @@ class DashboardRedirectTests(TestCase):
         response = self.client.get(reverse('dashboard:home'))
         # Should redirect to admin panel
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/admin/')
+        self.assertEqual(response.url, reverse('admin:index'))
     
     def test_staff_user_redirected_to_admin_panel(self):
         """Test that staff user is redirected to admin panel from dashboard"""
@@ -125,5 +125,5 @@ class DashboardRedirectTests(TestCase):
         response = self.client.get(reverse('dashboard:home'))
         # Should redirect to admin panel
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/admin/')
+        self.assertEqual(response.url, reverse('admin:index'))
 

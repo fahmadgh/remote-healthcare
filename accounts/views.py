@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.urls import reverse
 from .models import UserProfile, DoctorProfile, PatientProfile
 
 # Create your views here.
@@ -12,7 +13,7 @@ def root_redirect(request):
     if request.user.is_authenticated:
         # Handle admin/superuser - redirect directly to admin panel
         if request.user.is_superuser or request.user.is_staff:
-            return redirect('/admin/')
+            return redirect(reverse('admin:index'))
         
         # Check if user has a valid profile before redirecting to dashboard
         try:
@@ -97,7 +98,7 @@ def user_login(request):
     if request.user.is_authenticated:
         # Handle admin/superuser - redirect directly to admin panel
         if request.user.is_superuser or request.user.is_staff:
-            return redirect('/admin/')
+            return redirect(reverse('admin:index'))
         
         # Check if user has a valid profile before redirecting to dashboard
         try:
@@ -119,7 +120,7 @@ def user_login(request):
             if user.is_superuser or user.is_staff:
                 login(request, user)
                 messages.success(request, f'Welcome back, {user.first_name or user.username}!')
-                return redirect('/admin/')
+                return redirect(reverse('admin:index'))
             
             # Verify user has a profile before logging them in
             try:

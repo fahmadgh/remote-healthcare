@@ -109,7 +109,7 @@ class LoginRedirectTests(TestCase):
             'username': 'adminuser',
             'password': 'testpass123'
         })
-        self.assertRedirects(response, '/admin/')
+        self.assertRedirects(response, reverse('admin:index'))
     
     def test_staff_user_login_redirects_to_admin_panel(self):
         """Test that staff user login redirects to admin panel"""
@@ -127,7 +127,7 @@ class LoginRedirectTests(TestCase):
             'username': 'staffuser',
             'password': 'testpass123'
         })
-        self.assertRedirects(response, '/admin/')
+        self.assertRedirects(response, reverse('admin:index'))
     
     def test_authenticated_admin_accessing_login_redirects_to_admin(self):
         """Test that authenticated admin accessing login page redirects to admin panel"""
@@ -142,7 +142,7 @@ class LoginRedirectTests(TestCase):
         )
         self.client.login(username='adminuser', password='testpass123')
         response = self.client.get(reverse('accounts:login'))
-        self.assertRedirects(response, '/admin/')
+        self.assertRedirects(response, reverse('admin:index'))
     
     def test_root_url_redirects_admin_to_admin_panel(self):
         """Test that root URL redirects admin users to admin panel"""
@@ -157,5 +157,5 @@ class LoginRedirectTests(TestCase):
         )
         self.client.login(username='adminuser', password='testpass123')
         response = self.client.get('/')
-        self.assertRedirects(response, '/admin/')
+        self.assertRedirects(response, reverse('admin:index'))
 
