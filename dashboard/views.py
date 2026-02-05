@@ -28,8 +28,8 @@ def home(request):
             return redirect(reverse('admin:index'))
         else:
             # Regular user without profile - error state
-            logout(request)
             messages.error(request, 'Your user profile could not be loaded. This may indicate a system configuration issue. Please contact your system administrator for assistance.')
+            logout(request)
             return redirect('accounts:login')
 
 
