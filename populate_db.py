@@ -20,6 +20,28 @@ from consultation.models import ConsultationNote
 def create_sample_data():
     print("Creating sample data...")
     
+    # Create Admin User
+    admin_user, created = User.objects.get_or_create(
+        username='admin',
+        defaults={
+            'email': 'admin@example.com',
+            'first_name': 'Admin',
+            'last_name': 'User',
+            'is_staff': True,
+            'is_superuser': True
+        }
+    )
+    if created:
+        admin_user.set_password('admin123')
+        admin_user.save()
+        print(f"✓ Created admin user: admin / admin123")
+    else:
+        # Update existing admin user to ensure proper flags
+        admin_user.is_staff = True
+        admin_user.is_superuser = True
+        admin_user.save()
+        print(f"✓ Admin user already exists: admin")
+    
     # Create Doctor User
     doctor_user, created = User.objects.get_or_create(
         username='drsmith',
